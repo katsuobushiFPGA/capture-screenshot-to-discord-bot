@@ -1,0 +1,22 @@
+name = "capture-screenshot-sending-discord"
+main = "src/index.ts"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Browser Rendering binding for Playwright
+[browser]
+binding = "BROWSER"
+
+# Environment variables
+[vars]
+# TARGET_URL = "your-target-url-here"
+# DISCORD_BOT_TOKEN = "your-discord-bot-token-here"  
+# DISCORD_CHANNEL_ID = "your-discord-channel-id-here"
+
+# Cron trigger - runs daily at midnight UTC
+[triggers]
+crons = ["0 0 * * *"]
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true

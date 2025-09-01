@@ -1,0 +1,31 @@
+{
+  "name": "capture-screenshot-sending-discord",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker that captures screenshots and sends them to Discord",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler build",
+    "preview": "wrangler preview",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250831.0",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.33.1"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "screenshot",
+    "discord",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@cloudflare/puppeteer": "^1.0.4"
+  }
+}
