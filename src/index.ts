@@ -2,13 +2,13 @@
  * Cloudflare Worker for capturing screenshots and sending to Discord
  * Triggered daily at midnight UTC via cron schedule
  */
-import puppeteer, { Page } from '@cloudflare/puppeteer';
+import { launch, type BrowserWorker, type Page } from '@cloudflare/playwright';
 
 interface Environment {
   TARGET_URL: string;
   DISCORD_BOT_TOKEN: string;
   DISCORD_CHANNEL_ID: string;
-  BROWSER: Fetcher;
+  BROWSER: BrowserWorker;
 }
 
 export default {
@@ -27,30 +27,37 @@ export default {
 };
 
 /**
- * Capture screenshot using Cloudflare Browser Rendering (Puppeteer)
+ * Capture screenshot using Cloudflare Browser Rendering (Playwright)
  */
-async function captureScreenshot(url: string, browser: Fetcher, retries = 3): Promise<Blob> {
+async function captureScreenshot(url: string, browser: BrowserWorker, retries = 3): Promise<Blob> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       console.log(`Screenshot attempt ${attempt}/${retries} for URL: ${url}`);
       
-      // Launch browser using Cloudflare Browser Rendering
-      const browserInstance = await puppeteer.launch(browser);
+      // Launch browser using Cloudflare Browser Rendering (Playwright)
+      const browserInstance = await launch(browser);
       
       try {
         const page = await browserInstance.newPage();
         
         // Set viewport to desired screenshot size
-        await page.setViewport({ width: 1920, height: 1080 });
+        await page.setViewportSize({ width: 1920, height: 1080 });
         
         // Navigate to target URL
         await page.goto(url, { 
-          waitUntil: 'networkidle2',
+          waitUntil: 'load',
           timeout: 30000 
         });
         
         // Scroll through page to trigger lazy loading
         await autoScroll(page);
+        
+        // Wait for images to load (with timeout)
+        try {
+          await page.waitForFunction('window.allImagesLoaded === true', { timeout: 5000 });
+        } catch {
+          console.log('allImagesLoaded not found or timeout, continuing...');
+        }
         
         // Take screenshot
         const screenshot = await page.screenshot({
@@ -58,9 +65,8 @@ async function captureScreenshot(url: string, browser: Fetcher, retries = 3): Pr
           fullPage: true  // 📸 Full page screenshot including all scrollable content
         });
         
-        // Convert buffer to blob
-        const arrayBuffer = screenshot.buffer as ArrayBuffer;
-        const blob = new Blob([arrayBuffer], { type: 'image/png' });
+        // Convert buffer to blob (Playwright returns Buffer)
+        const blob = new Blob([screenshot], { type: 'image/png' });
         
         console.log(`Screenshot captured successfully (${blob.size} bytes)`);
         return blob;

@@ -26,6 +26,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@cloudflare/puppeteer": "^1.0.4"
+    "@cloudflare/playwright": "^0.0.11"
   }
 }
