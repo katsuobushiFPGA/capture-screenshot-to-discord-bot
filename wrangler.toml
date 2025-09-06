@@ -1,4 +1,4 @@
-name = "capture-screenshot-sending-discord"
+name = "capture-screenshot-to-discord-bot"
 main = "src/index.ts"
 compatibility_date = "2025-03-05"
 compatibility_flags = ["nodejs_compat_v2"]
