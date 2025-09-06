@@ -15,7 +15,7 @@ binding = "BROWSER"
 
 # Cron trigger - runs every Friday at 15:00 JST (06:00 UTC)
 [triggers]
-crons = ["0 6 * * 5"]
+crons = ["0 6 * * 6"]
 
 [observability.logs]
 enabled = true
